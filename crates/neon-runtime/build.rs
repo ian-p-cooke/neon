@@ -122,8 +122,8 @@ fn link_library() {
         format!("build\\{}\\obj\\neon\\win_delay_load_hook.obj", configuration)
     };
 
-    
-    cc::Build::new().object(object_path).object(hook_object_path).flag("/LINK /DELAYLOAD:node.exe").compile("libneon.a");
+    env::set_var("_CL_", "/LINK /DELAYLOAD:node.exe");
+    cc::Build::new().object(object_path).object(hook_object_path).compile("libneon.a");
     //let mut cmd = cc::Build::new().get_compiler().to_command();
     //let out = env::var("OUT_DIR").unwrap();
     //cmd.arg("/DLL");
