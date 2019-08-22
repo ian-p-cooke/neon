@@ -128,8 +128,8 @@ fn link_library() {
     let out = env::var("OUT_DIR").unwrap();
     cmd.arg("/OUT");
     let out = Path::new(&out);
-    let out = out.join("libneon.a").to_str().unwrap();
-    cmd.arg(&out);
+    let out = out.join("libneon.a");
+    cmd.arg(out.to_str().unwrap());
     cmd.arg("/DELAYLOAD:node.exe");
     cmd.arg(&object_path);
     cmd.arg(&hook_object_path);
