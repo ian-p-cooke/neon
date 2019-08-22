@@ -125,10 +125,13 @@ fn link_library() {
     
     let mut cmd = cc::Build::new().object(object_path).object(hook_object_path).get_compiler().to_command();
     let out = env::var("OUT_DIR").unwrap();
+    cmd.arg("/OUT");
     let out = Path::new(&out);
-    let out = String::from("/OUT:") + out.join("libneon.a").to_str().unwrap();
+    let out = out.join("libneon.a").to_str().unwrap();
     cmd.arg(&out);
     cmd.arg("/DELAYLOAD:node.exe");
+    cmd.arg(object_path);
+    cmd.arg(object_path);
     println!("{:?}",cmd);
     let status = cmd.status();
     assert!(status.unwrap().success());
