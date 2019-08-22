@@ -122,7 +122,7 @@ fn link_library() {
     };
 
     
-    cc::Build::new().object(object_path).object(hook_object_path).compile("libneon.a");
+    cc::Build::new().flag("/DELAYLOAD:node.exe").object(object_path).object(hook_object_path).compile("libneon.a");
 }
 
 fn debug() -> bool {
