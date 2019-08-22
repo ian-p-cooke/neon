@@ -124,26 +124,23 @@ fn link_library() {
 
     //env::set_var("_CL_", "/LINK /DELAYLOAD:node.exe");
     //println!("{:?}",cc::Build::new().object(&object_path).object(&hook_object_path).flag("/link /delayload:node.exe").get_compiler());
-    //cc::Build::new().object(&object_path).object(&hook_object_path).flag("/VERBOSE").flag("/link /delayload:node.exe").compile("libneon.a");
-    let mut cmd = cc::Build::new().get_compiler().to_command();
-    cmd.arg("/LD");
+    cc::Build::new().object(&object_path).object(&hook_object_path).compile("libneon.a");
+    //let mut cmd = cc::Build::new().get_compiler().to_command();
+    //cmd.arg("/LD");
     
-    let out = env::var("OUT_DIR").unwrap();
-    //cmd.arg("-nologo");
-    //cmd.arg("-MD");
-    //cmd.arg("-O2");
-    //cmd.arg("-W4");
-    let out = Path::new(&out);
-    let out = out.join("libneon.a");
+    //let out = env::var("OUT_DIR").unwrap();
+    
+    //let out = Path::new(&out);
+    //let out = out.join("libneon.a");
 
-    cmd.arg("/Fo".to_string() + out.to_str().unwrap());
-    cmd.arg(&object_path);
-    cmd.arg(&hook_object_path);
-    cmd.arg("/link");
-    cmd.arg("/DELAYLOAD:node.exe");
-    println!("{:?}",cmd);
-    let status = cmd.status();
-    assert!(status.unwrap().success());
+    //cmd.arg("/Fo".to_string() + out.to_str().unwrap());
+    //cmd.arg(&object_path);
+    //cmd.arg(&hook_object_path);
+    //cmd.arg("/link");
+    //cmd.arg("/DELAYLOAD:node.exe");
+    //println!("{:?}",cmd);
+    //let status = cmd.status();
+    //assert!(status.unwrap().success());
 }
 
 fn debug() -> bool {
