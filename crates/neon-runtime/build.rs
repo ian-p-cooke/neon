@@ -122,7 +122,13 @@ fn link_library() {
     };
 
     
-    cc::Build::new().object(object_path).object(hook_object_path).flag("ipc-test").compile("libneon.a");
+    let cmd = cc::Build::new().object(object_path).object(hook_object_path).get_compiler().to_command();
+    let out = env::var("OUT_DIR").unwrap();
+    let out = Path::new(&out);
+    cmd.arg(out.join("libneon.a"));
+    cmd.arg("/DELAYLOAD:node.exe");
+    let status = cmd.status();
+    assert!(status.unwrap().success());
 }
 
 fn debug() -> bool {
