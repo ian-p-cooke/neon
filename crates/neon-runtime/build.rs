@@ -126,6 +126,7 @@ fn link_library() {
     //let mut cmd = cc::Build::new().object(object_path).object(hook_object_path).get_compiler().to_command();
     let mut cmd = cc::Build::new().get_compiler().to_command();
     let out = env::var("OUT_DIR").unwrap();
+    cmd.arg("/DLL");
     cmd.arg("/Fo");
     let out = Path::new(&out);
     let out = out.join("libneon.a");
