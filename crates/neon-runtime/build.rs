@@ -123,7 +123,7 @@ fn link_library() {
     };
 
     env::set_var("_CL_", "/LINK /DELAYLOAD:node.exe");
-    cc::Build::new().object(object_path).object(hook_object_path).compile("libneon.a");
+    println!("{:?}",cc::Build::new().object(object_path).object(hook_object_path).get_compiler());
     //let mut cmd = cc::Build::new().get_compiler().to_command();
     //let out = env::var("OUT_DIR").unwrap();
     //cmd.arg("/DLL");
