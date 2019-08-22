@@ -131,10 +131,10 @@ fn link_library() {
     //cmd.arg("-MD");
     //cmd.arg("-O2");
     //cmd.arg("-W4");
-    cmd.arg("/Fo");
     let out = Path::new(&out);
     let out = out.join("libneon.a");
-    cmd.arg(out.to_str().unwrap());    
+
+    cmd.arg("/Fo".to_string() + out.to_str().unwrap());
     cmd.arg(&object_path);
     cmd.arg(&hook_object_path);
     cmd.arg("/LINK");
