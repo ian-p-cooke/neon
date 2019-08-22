@@ -115,7 +115,14 @@ fn link_library() {
         format!("build\\{}\\obj\\neon\\neon.obj", configuration)
     };
 
-    cc::Build::new().object(object_path).compile("libneon.a");
+    let hook_object_path = if cfg!(unix) {
+        format!("build/{}/obj.target/neon/src/win_delay_load_hook.o", configuration)
+    } else {
+        format!("build\\{}\\obj\\neon\\win_delay_load_hook.obj", configuration)
+    };
+
+    
+    cc::Build::new().object(object_path).object(hook_object_path).compile("libneon.a");
 }
 
 fn debug() -> bool {
