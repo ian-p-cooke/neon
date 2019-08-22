@@ -15,6 +15,6 @@ pub fn setup() {
         println!("cargo:rustc-link-search={}\\{}", node_root_dir, configuration);
         println!("cargo:rustc-link-search=native={}", &node_lib_path.display());
         println!("cargo:rustc-link-lib={}", &node_lib_file_path.file_stem().unwrap().to_str().unwrap());
-        println!("cargo:rustc-cdylib-link-arg=/DELAYLOAD:node.exe");
+        println!("cargo:rustc-dylib-link-arg=/DELAYLOAD:node.exe");
     }
 }
