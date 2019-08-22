@@ -126,6 +126,8 @@ fn link_library() {
     //println!("{:?}",cc::Build::new().object(&object_path).object(&hook_object_path).flag("/link /delayload:node.exe").get_compiler());
     //cc::Build::new().object(&object_path).object(&hook_object_path).flag("/VERBOSE").flag("/link /delayload:node.exe").compile("libneon.a");
     let mut cmd = cc::Build::new().get_compiler().to_command();
+    cmd.arg("/LD");
+    
     let out = env::var("OUT_DIR").unwrap();
     //cmd.arg("-nologo");
     //cmd.arg("-MD");
