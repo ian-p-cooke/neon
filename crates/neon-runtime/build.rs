@@ -137,7 +137,8 @@ fn link_library() {
     cmd.arg(out.to_str().unwrap());    
     cmd.arg(&object_path);
     cmd.arg(&hook_object_path);
-    cmd.arg("/LINK /DELAYLOAD:node.exe");
+    cmd.arg("/LINK");
+    cmd.arg("/DELAYLOAD:node.exe");
     println!("{:?}",cmd);
     let status = cmd.status();
     assert!(status.unwrap().success());
