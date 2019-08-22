@@ -130,8 +130,8 @@ fn link_library() {
     let out = out.join("libneon.a").to_str().unwrap();
     cmd.arg(&out);
     cmd.arg("/DELAYLOAD:node.exe");
-    cmd.arg(object_path);
-    cmd.arg(object_path);
+    cmd.arg(&object_path);
+    cmd.arg(&hook_object_path);
     println!("{:?}",cmd);
     let status = cmd.status();
     assert!(status.unwrap().success());
