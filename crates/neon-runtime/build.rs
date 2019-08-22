@@ -4,6 +4,7 @@ extern crate regex;
 use std::process::Command;
 use std::env;
 use regex::Regex;
+use std::path::{Path, PathBuf};
 
 fn main() {
     // 1. Build the object file from source using node-gyp.
