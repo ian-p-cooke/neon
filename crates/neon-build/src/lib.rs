@@ -20,29 +20,34 @@ pub fn setup() {
         println!("cargo:rustc-link-search=native={}", &node_lib_path.display());
         println!("cargo:rustc-link-lib={}", &node_lib_file_path.file_stem().unwrap().to_str().unwrap());
 
-        //for win_delay_load_hook.cc
-        let win_delay_load_hook_cc = include_str!("win_delay_load_hook.cc");
-        let out_dir = env::var("OUT_DIR").unwrap();
-        let out_dir_path = Path::new(&out_dir);
-        let path = out_dir_path.join("win_delay_load_hook.cc");
-        {
-            let mut file = File::create(&path).unwrap();
-            file.write_all(win_delay_load_hook_cc.as_bytes()).unwrap();
-        }        
-        let mut cmd = cc::Build::new().define("HOST_BINARY", "\"node.exe\"").file(&path).get_compiler().to_command();
-        
-        cmd.arg("/c");
-        let obj_path = out_dir_path.join("win_delay_load_hook.obj");
-        let output = format!("/Fo{}", obj_path.to_str().unwrap());
-        cmd.arg(&output);
-        cmd.arg(path.to_str().unwrap());
+        //for win_delay_load_hook.cc needed on Windows with msvc toolchain
+        let compiler = cc::Build::new().define("HOST_BINARY", "\"node.exe\"").get_compiler();
+        if compiler.is_like_msvc() {
+            //the final node module must link win_delay_load_hook for compatibility with electron v4+
+            //it is not necessary but does not hurt anything to use it with node.exe directly.
+            let win_delay_load_hook_cc = include_str!("win_delay_load_hook.cc");
 
-        println!("{:?}", &cmd);
-        assert!(cmd.status().unwrap().success());
+            let out_dir = env::var("OUT_DIR").unwrap();
+            let out_dir_path = Path::new(&out_dir);
+            let path = out_dir_path.join("win_delay_load_hook.cc");
+            {
+                let mut file = File::create(&path).unwrap();
+                file.write_all(win_delay_load_hook_cc.as_bytes()).unwrap();
+            }        
+            let mut cmd = compiler.to_command();
+            
+            cmd.arg("/c"); //compile, don't link
+            let obj_path = out_dir_path.join("win_delay_load_hook.obj");
+            let output = format!("/Fo{}", obj_path.to_str().unwrap());
+            cmd.arg(&output); //write obj to OUT_DIR
+            cmd.arg(path.to_str().unwrap()); //compile this file
 
-        //println!("cargo:rustc-link-lib=win_delay_load_hook");        
-        println!("cargo:rustc-cdylib-link-arg=/DELAYLOAD:node.exe");
-        println!("cargo:rustc-cdylib-link-arg={}", obj_path.to_str().unwrap());
-        println!("cargo:rustc-link-lib=delayimp");        
+            println!("Running {:?}", &cmd);
+            assert!(cmd.status().unwrap().success());
+
+            println!("cargo:rustc-cdylib-link-arg=/DELAYLOAD:node.exe");
+            println!("cargo:rustc-cdylib-link-arg={}", obj_path.to_str().unwrap());
+            println!("cargo:rustc-link-lib=delayimp");
+        }
     }
 }
