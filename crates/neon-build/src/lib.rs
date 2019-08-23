@@ -34,6 +34,9 @@ pub fn setup() {
                 let mut file = File::create(&path).unwrap();
                 file.write_all(win_delay_load_hook_cc.as_bytes()).unwrap();
             }        
+            // we have to use the compiler's command ourself because otherwise it will compile 
+            // as a .lib and emit link directives for cargo which won't work for a delay load hook.  It has to be linked 
+            // in directly which we do below.  Note that this assumes the final node module is a cdylib instead of a dylib.
             let mut cmd = compiler.to_command();
             
             cmd.arg("/c"); //compile, don't link
