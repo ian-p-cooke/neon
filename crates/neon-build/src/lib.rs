@@ -29,10 +29,20 @@ pub fn setup() {
             let mut file = File::create(&path).unwrap();
             file.write_all(win_delay_load_hook_cc.as_bytes()).unwrap();
         }        
-        cc::Build::new().define("HOST_BINARY", "\"node.exe\"").file(&path).compile("win_delay_load_hook");
+        let mut cmd = cc::Build::new().define("HOST_BINARY", "\"node.exe\"").file(&path).get_compiler().to_command();
+        
+        cmd.arg("/c");
+        let obj_path = out_dir_path.join("win_delay_load_hook.obj");
+        let output = format!("/Fo{}", obj_path.to_str().unwrap());
+        cmd.arg(&output);
+        cmd.arg(path.to_str().unwrap());
+
+        println!("{:?}", &cmd);
+        assert!(cmd.status().unwrap().success());
+
         //println!("cargo:rustc-link-lib=win_delay_load_hook");        
         println!("cargo:rustc-cdylib-link-arg=/DELAYLOAD:node.exe");
-        //println!("cargo:rustc-cdylib-link-arg=win_delay_load_hook.o");
+        println!("cargo:rustc-cdylib-link-arg={}", obj_path.to_str().unwrap());
         println!("cargo:rustc-link-lib=delayimp");        
     }
 }
